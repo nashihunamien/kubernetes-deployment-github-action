@@ -1,0 +1,23 @@
+name: helm-deployer
+on: push
+jobs:
+  helm:
+    name: Helm
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@main
+      
+      - name: Install Helm
+        uses: azure/setup-helm@v1
+        with:
+          version: v3.9.3
+
+      - name: Lint chart
+        run: helm lint nginx
+        working-directory: sample-go/charts
+
+      - name: Install release
+        uses: hiberbee/github-action-helm@latest
+        with:
+          helm: upgrade --install --dry-run sample-go sample-go
